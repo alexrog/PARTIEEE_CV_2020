@@ -129,7 +129,7 @@ def addSimilarColors(target):
 createCircle = False
 createRect = True
 
-for j in range(1000):
+for j in range(1):
     base_img = cv2.imread("test google earth.jpg")
     for i in range(1):
         fileInfo = []
@@ -149,7 +149,7 @@ for j in range(1000):
             target_img = cv2.rotate(target_img, cv2.ROTATE_180)
         elif random_rot == 4:
             target_img = cv2.rotate(target_img, cv2.ROTATE_90_COUNTERCLOCKWISE)
-        shrink_size = random.randint(4,10)/100
+        shrink_size = random.randint(4,5)/16
         target_img = cv2.resize(target_img, (0,0), fx=shrink_size, fy=shrink_size,interpolation = cv2.INTER_AREA) 
         target_img = addSimilarColors(target_img)
         #target_img = sp_noise(target_img, 1)
@@ -157,15 +157,16 @@ for j in range(1000):
         y = random.randint(200,base_img.shape[1]-200)
         addTarget(target_img, base_img, x, y)
         
-        if createCircle:   
+        '''if createCircle:   
             cv2.imwrite('Image Dataset/Close Ups/Circle/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", base_img[x-random.randint(75,125):x+random.randint(75,125), y-random.randint(75,125):y+random.randint(75,125)]) 
         elif createRect:
             cv2.imwrite('Image Dataset/Close Ups/Rectangle/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", base_img[x-random.randint(75,125):x+random.randint(75,125), y-random.randint(75,125):y+random.randint(75,125)]) 
-        #cv2.imwrite('Image Dataset/Full Image/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", base_img)
+        '''
+        cv2.imwrite('Image Dataset/Full Image/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", base_img)
         print(j, i)
     
     
 #cv2.imshow('shape image',shape_img)
-#cv2.imshow('base image',base_img)
-#cv2.waitKey(0)
-#cv2.destroyAllWindows()
+cv2.imshow('base image',base_img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
