@@ -55,7 +55,8 @@ def addTarget(target, background, x, y):
             if temp_background[i][j][3] != 0:
                 background[x+i][y+j] = temp_background[i][j][0:3]
     
-    cv2.imwrite('temp_background.png', background[x-75:x+75, y-100:y+100])      
+    cv2.imwrite('temp_background.png', background[x-75:x+75, y-100:y+100])   
+    return temp_background.shape[0], temp_background.shape[1]
                 
 def createCircleTarget():
     color = (random.randint(10,255), random.randint(10,255), random.randint(10,255))
@@ -79,6 +80,33 @@ def createCircleTarget():
     shape_img.save('test.png', 'PNG')
     return hexColors
     
+def createTriangleTarget():
+    color = (random.randint(10,255), random.randint(10,255), random.randint(10,255))
+    hexColors = ["triangle",webcolors.rgb_to_hex(color)]
+    
+    t1, t2, t4 = random.randint(0,100), random.randint(0,100), random.randint(0,100)
+    t3, t6 = random.randint(400,600), random.randint(400,600)
+    t5 = (t3-t1)/2 + random.randint(-10,10)
+    W, H = 600, 600
+    shape_img = Image.new('RGBA', (W, H), (color[0], color[1], color[2], 0))
+    
+    draw = ImageDraw.Draw(shape_img)
+    draw.polygon(((t1,t2),(t3,t4),(t5,t6)), fill=(color))
+    font = ImageFont.truetype("Helvetica.ttf", int((t3-t1+t6-t2)/2)-200)
+    # draw.text((x, y),"Sample Text",(r,g,b))
+    color = (random.randint(10,255), random.randint(10,255), random.randint(10,255))
+    
+    msg = random.choice(string.ascii_letters)
+    hexColors.append(msg)
+    hexColors.append(webcolors.rgb_to_hex(color))
+    
+    w, h = draw.textsize(msg, font=font)
+    draw.text((t5-w/3,t6/3-w/2), msg,(color[0],color[1],color[2]),font=font)
+    #shape_img= shape_img.rotate(random.randint(0,360))
+    shape_img.save('test.png', 'PNG')
+    
+    return hexColors
+
 def createRectangleTarget():
     color = (random.randint(10,255), random.randint(10,255), random.randint(10,255))
     hexColors = ["rectangle",webcolors.rgb_to_hex(color)]
@@ -86,7 +114,7 @@ def createRectangleTarget():
     W, H = random.randint(400,600), random.randint(400,600)
     shape_img = Image.new('RGBA', (W, H), (color[0], color[1], color[2], 0))
     
-    draw = ImageDraw.Draw(shape_img)
+    draw = ImageDraw.Draw(shape_img)    
     draw.rectangle((0, 0, W, H), fill=(color[0], color[1], color[2]))
     font = ImageFont.truetype("Helvetica.ttf", random.randint(250,450))
     # draw.text((x, y),"Sample Text",(r,g,b))
@@ -101,6 +129,28 @@ def createRectangleTarget():
     #shape_img= shape_img.rotate(random.randint(0,360))
     shape_img.save('test.png', 'PNG')
     
+    return hexColors
+
+def createSemiCircleTarget():
+    color = (random.randint(10,255), random.randint(10,255), random.randint(10,255))
+    hexColors = ["semicircle",webcolors.rgb_to_hex(color)]
+    W, H = random.randint(400,600), random.randint(400,600)
+    shape_img = Image.new('RGBA', (W, int(H/2)), (color[0], color[1], color[2], 0))
+    
+    draw = ImageDraw.Draw(shape_img)
+    draw.ellipse((0, 0, W, H), fill=(color[0], color[1], color[2]))
+    font = ImageFont.truetype("Helvetica.ttf", random.randint(200,300))
+    # draw.text((x, y),"Sample Text",(r,g,b))
+    color = (random.randint(10,255), random.randint(10,255), random.randint(10,255))
+    
+    msg = random.choice(string.ascii_letters)
+    hexColors.append(msg)
+    hexColors.append(webcolors.rgb_to_hex(color))
+    
+    w, h = draw.textsize(msg, font=font)
+    draw.text(((W-w)/2,6), msg,(color[0],color[1],color[2]),font=font)
+    #shape_img= shape_img.rotate(random.randint(0,360))
+    shape_img.save('test.png', 'PNG')
     return hexColors
     
 def addSimilarColors(target):
@@ -127,16 +177,38 @@ def addSimilarColors(target):
 
 
 createCircle = False
-createRect = True
+createRect = False
+createTri = False
+createSemiCircle = True
+
+saveImg = False
+
+numTargetsPerImg = 10
 
 for j in range(1):
+    '''if j == 0:
+        createCircle = True
+        createRect = False
+        createTri = False
+    elif j == 500:
+        createCircle = False
+        createRect = True
+        createTri = False
+    elif j == 1000:
+        createCircle = False
+        createRect = False
+        createTri = True'''
     base_img = cv2.imread("test google earth.jpg")
-    for i in range(1):
+    for i in range(numTargetsPerImg):
         fileInfo = []
         if createCircle:
             fileInfo = createCircleTarget()
         elif createRect:
             fileInfo = createRectangleTarget()
+        elif createTri:
+            fileInfo = createTriangleTarget()
+        elif createSemiCircle:
+            fileInfo = createSemiCircleTarget()
         
         target_img = cv2.imread("test.png", cv2.IMREAD_UNCHANGED)
         
@@ -149,24 +221,38 @@ for j in range(1):
             target_img = cv2.rotate(target_img, cv2.ROTATE_180)
         elif random_rot == 4:
             target_img = cv2.rotate(target_img, cv2.ROTATE_90_COUNTERCLOCKWISE)
-        shrink_size = random.randint(4,5)/16
+        shrink_size = random.randint(10,18)/100
         target_img = cv2.resize(target_img, (0,0), fx=shrink_size, fy=shrink_size,interpolation = cv2.INTER_AREA) 
         target_img = addSimilarColors(target_img)
         #target_img = sp_noise(target_img, 1)
-        x = random.randint(200,base_img.shape[0]-200)
-        y = random.randint(200,base_img.shape[1]-200)
-        addTarget(target_img, base_img, x, y)
+        extra_area = 200 # area on the sides of the map for a buffer
+        x = random.randint(extra_area,base_img.shape[0]-extra_area)
+        y = random.randint(extra_area,base_img.shape[1]-extra_area)
         
-        '''if createCircle:   
-            cv2.imwrite('Image Dataset/Close Ups/Circle/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", base_img[x-random.randint(75,125):x+random.randint(75,125), y-random.randint(75,125):y+random.randint(75,125)]) 
-        elif createRect:
-            cv2.imwrite('Image Dataset/Close Ups/Rectangle/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", base_img[x-random.randint(75,125):x+random.randint(75,125), y-random.randint(75,125):y+random.randint(75,125)]) 
-        '''
-        cv2.imwrite('Image Dataset/Full Image/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", base_img)
-        print(j, i)
+        # adds target and stores the x,y coordinate locations
+        right_x, bottom_y = addTarget(target_img, base_img, x, y)
+        
+        cropped_border = 15 # border around the cropped images
+        
+        #crops the image around the target
+        cropped_img = base_img[x-cropped_border:x+right_x+cropped_border, y-cropped_border:y+bottom_y+cropped_border]
+        
+        if saveImg:
+            if createCircle:   
+                cv2.imwrite('Image Dataset/Close Ups/Circle/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", cropped_img) 
+            elif createRect:
+                cv2.imwrite('Image Dataset/Close Ups/Rectangle/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", cropped_img)
+            elif createTri:
+                cv2.imwrite('Image Dataset/Close Ups/Triangle/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", cropped_img)
+            elif createSemiCircle:
+                cv2.imwrite('Image Dataset/Close Ups/Triangle/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", cropped_img)
+        
+        #cv2.imwrite('Image Dataset/Full Image/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", base_img)
+    if j % 100 == 0:
+        print(j)
     
     
-#cv2.imshow('shape image',shape_img)
+cv2.imshow('shape image',cropped_img)
 cv2.imshow('base image',base_img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
