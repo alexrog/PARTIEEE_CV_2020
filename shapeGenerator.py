@@ -181,11 +181,11 @@ createRect = False
 createTri = False
 createSemiCircle = True
 
-saveImg = False
+saveImg = True
 
-numTargetsPerImg = 10
+numTargetsPerImg = 1
 
-for j in range(1):
+for j in range(500):
     '''if j == 0:
         createCircle = True
         createRect = False
@@ -245,14 +245,14 @@ for j in range(1):
             elif createTri:
                 cv2.imwrite('Image Dataset/Close Ups/Triangle/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", cropped_img)
             elif createSemiCircle:
-                cv2.imwrite('Image Dataset/Close Ups/Triangle/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", cropped_img)
+                cv2.imwrite('Image Dataset/Close Ups/Semicircle/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", cropped_img)
         
         #cv2.imwrite('Image Dataset/Full Image/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", base_img)
     if j % 100 == 0:
         print(j)
     
     
-cv2.imshow('shape image',cropped_img)
+'''cv2.imshow('shape image',cropped_img)
 cv2.imshow('base image',base_img)
 cv2.waitKey(0)
-cv2.destroyAllWindows()
+cv2.destroyAllWindows()'''
