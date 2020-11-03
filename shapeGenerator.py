@@ -8,6 +8,7 @@ Created on Fri Sep 25 10:39:41 2020
 import cv2 
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
+import math
 import random
 import string
 import webcolors
@@ -152,6 +153,122 @@ def createSemiCircleTarget():
     #shape_img= shape_img.rotate(random.randint(0,360))
     shape_img.save('test.png', 'PNG')
     return hexColors
+
+def createQuarterCircleTarget():
+    color = (random.randint(10,255), random.randint(10,255), random.randint(10,255))
+    hexColors = ["quartercircle",webcolors.rgb_to_hex(color)]
+    W, H = random.randint(400,600), random.randint(400,600)
+    shape_img = Image.new('RGBA', (int(W/2), int(H/2)), (color[0], color[1], color[2], 0))
+    
+    draw = ImageDraw.Draw(shape_img)
+    draw.ellipse((0, 0, W, H), fill=(color[0], color[1], color[2]))
+    font = ImageFont.truetype("Helvetica.ttf", int(max(W/2, H/2)) - 100)
+    # draw.text((x, y),"Sample Text",(r,g,b))
+    color = (random.randint(10,255), random.randint(10,255), random.randint(10,255))
+    
+    msg = random.choice(string.ascii_letters)
+    hexColors.append(msg)
+    hexColors.append(webcolors.rgb_to_hex(color))
+    
+    w, h = draw.textsize(msg, font=font)
+    draw.text((200-w,200-h), msg,(color[0],color[1],color[2]),font=font)
+    #shape_img= shape_img.rotate(random.randint(0,360))
+    shape_img.save('test.png', 'PNG')
+    return hexColors
+
+def createCrossTarget():
+    color = (random.randint(10,255), random.randint(10,255), random.randint(10,255))
+    hexColors = ["cross",webcolors.rgb_to_hex(color)]
+    
+    W, H = random.randint(400,600), random.randint(400,600)
+    shape_img = Image.new('RGBA', (W, H), (color[0], color[1], color[2], 0))
+    
+    draw = ImageDraw.Draw(shape_img)    
+    draw.rectangle((5*W/16, 0, 11*W/16, H), fill=(color[0], color[1], color[2]))
+    draw.rectangle((0, 5*H/16, W, 11*H/16), fill=(color[0], color[1], color[2]))
+    font = ImageFont.truetype("Helvetica.ttf", random.randint(250,450))
+    # draw.text((x, y),"Sample Text",(r,g,b))
+    color = (random.randint(10,255), random.randint(10,255), random.randint(10,255))
+    
+    msg = random.choice(string.ascii_letters)
+    hexColors.append(msg)
+    hexColors.append(webcolors.rgb_to_hex(color))
+    
+    w, h = draw.textsize(msg, font=font)
+    draw.text(((W-w)/2,(H-h)/2), msg,(color[0],color[1],color[2]),font=font)
+    #shape_img= shape_img.rotate(random.randint(0,360))
+    shape_img.save('test.png', 'PNG')
+    
+    return hexColors
+
+def createPolygonTarget():
+    numSides = random.randint(5,8)
+    if numSides == 5:
+        name = "pentagon"
+    elif numSides == 6:
+        name = "hexagon"
+    elif numSides == 7:
+        name = "heptagon"
+    else:
+        name = "octagon"
+       
+    W = random.randint(400,600)
+    H = W
+    xy = [ 
+            ((math.cos(th) + 1) * W/2, 
+             (math.sin(th) + 1) * W/2) 
+            for th in [i * (2 * math.pi) / numSides for i in range(numSides)] 
+    ]        
+    
+    color = (random.randint(10,255), random.randint(10,255), random.randint(10,255))
+    hexColors = [name,webcolors.rgb_to_hex(color)]
+    
+    
+    shape_img = Image.new('RGBA', (W, H), (color[0], color[1], color[2], 0))
+    
+    draw = ImageDraw.Draw(shape_img)    
+    draw.polygon(xy, fill=(color[0], color[1], color[2]))
+    
+    font = ImageFont.truetype("Helvetica.ttf", random.randint(250,450))
+    # draw.text((x, y),"Sample Text",(r,g,b))
+    color = (random.randint(10,255), random.randint(10,255), random.randint(10,255))
+    
+    msg = random.choice(string.ascii_letters)
+    hexColors.append(msg)
+    hexColors.append(webcolors.rgb_to_hex(color))
+    
+    w, h = draw.textsize(msg, font=font)
+    draw.text(((W-w)/2,(H-h)/2), msg,(color[0],color[1],color[2]),font=font)
+    #shape_img= shape_img.rotate(random.randint(0,360))
+    shape_img.save('test.png', 'PNG')
+    
+    return hexColors
+
+def createStarTarget():
+    color = (random.randint(10,255), random.randint(10,255), random.randint(10,255))
+    hexColors = ["star",webcolors.rgb_to_hex(color)]
+    
+    W, H = 500, 500
+    shape_img = Image.new('RGBA', (W, H), (color[0], color[1], color[2], 0))
+    
+    draw = ImageDraw.Draw(shape_img)
+    draw.polygon(((0,180),(500,180),(250,360)), fill=(color))
+    draw.polygon(((250,0),(95,475),(345,290)), fill=(color))
+    draw.polygon(((250,0),(405,475),(155,290)), fill=(color))
+    font = ImageFont.truetype("Helvetica.ttf", 200)
+    # draw.text((x, y),"Sample Text",(r,g,b))
+    color = (random.randint(10,255), random.randint(10,255), random.randint(10,255))
+    
+    msg = random.choice(string.ascii_letters)
+    hexColors.append(msg)
+    hexColors.append(webcolors.rgb_to_hex(color))
+    
+    w, h = draw.textsize(msg, font=font)
+    draw.text(((W-w)/2,(H-h)/2), msg,(color[0],color[1],color[2]),font=font)
+    #shape_img= shape_img.rotate(random.randint(0,360))
+    shape_img.save('test.png', 'PNG')
+    
+    return hexColors
     
 def addSimilarColors(target):
     #back_color = target_img[1][1][0:3]
@@ -179,25 +296,42 @@ def addSimilarColors(target):
 createCircle = False
 createRect = False
 createTri = False
-createSemiCircle = True
+createSemiCircle = False
+createQuarterCircle = False
+createCross = False
+createPolygon = False
+createStar = True
 
+# CHANGE THESE
+createAllTargets = True
 saveImg = True
+numTargetsPerImg = 1 # inner
+numImgToMake = 2000 # outer
 
-numTargetsPerImg = 1
+# next to create: quartercircle, star, plus, pentagon
 
-for j in range(500):
-    '''if j == 0:
-        createCircle = True
-        createRect = False
-        createTri = False
-    elif j == 500:
-        createCircle = False
-        createRect = True
-        createTri = False
-    elif j == 1000:
-        createCircle = False
-        createRect = False
-        createTri = True'''
+for j in range(numImgToMake):
+    if createAllTargets:
+        if j == 0:
+            createQuarterCircle = True
+            createCross = False
+            createPolygon = False
+            createStar = False
+        elif j == 500:
+            createQuarterCircle = False
+            createCross = True
+            createPolygon = False
+            createStar = False
+        elif j == 1000:
+            createQuarterCircle = False
+            createCross = False
+            createPolygon = True
+            createStar = False
+        elif j == 1500:
+            createQuarterCircle = False
+            createCross = False
+            createPolygon = False
+            createStar = True
     base_img = cv2.imread("test google earth.jpg")
     for i in range(numTargetsPerImg):
         fileInfo = []
@@ -209,6 +343,14 @@ for j in range(500):
             fileInfo = createTriangleTarget()
         elif createSemiCircle:
             fileInfo = createSemiCircleTarget()
+        elif createQuarterCircle:
+            fileInfo = createQuarterCircleTarget()
+        elif createCross:
+            fileInfo = createCrossTarget()
+        elif createPolygon:
+            fileInfo = createPolygonTarget()
+        elif createStar:
+            fileInfo = createStarTarget()
         
         target_img = cv2.imread("test.png", cv2.IMREAD_UNCHANGED)
         
@@ -246,13 +388,20 @@ for j in range(500):
                 cv2.imwrite('Image Dataset/Close Ups/Triangle/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", cropped_img)
             elif createSemiCircle:
                 cv2.imwrite('Image Dataset/Close Ups/Semicircle/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", cropped_img)
-        
+            elif createQuarterCircle:
+                cv2.imwrite('Image Dataset/Close Ups/Quartercircle/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", cropped_img)
+            elif createCross:
+                cv2.imwrite('Image Dataset/Close Ups/Cross/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", cropped_img)
+            elif createPolygon:
+                cv2.imwrite('Image Dataset/Close Ups/Polygon/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", cropped_img)
+            elif createStar:
+                cv2.imwrite('Image Dataset/Close Ups/Star/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", cropped_img)
         #cv2.imwrite('Image Dataset/Full Image/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", base_img)
     if j % 100 == 0:
         print(j)
     
-    
-'''cv2.imshow('shape image',cropped_img)
-cv2.imshow('base image',base_img)
-cv2.waitKey(0)
-cv2.destroyAllWindows()'''
+if not saveImg:    
+    cv2.imshow('shape image',cropped_img)
+    cv2.imshow('base image',base_img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
