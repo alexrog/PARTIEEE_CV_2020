@@ -304,34 +304,85 @@ createStar = True
 
 # CHANGE THESE
 createAllTargets = True
-saveImg = True
+saveImg = False
+saveFullImg = True
 numTargetsPerImg = 1 # inner
-numImgToMake = 2000 # outer
-
-# next to create: quartercircle, star, plus, pentagon
+numImgToMake = 40 # outer
 
 for j in range(numImgToMake):
     if createAllTargets:
         if j == 0:
+            createCircle = True
+            createRect = False
+            createTri = False
+            createSemiCircle = False
+            createQuarterCircle = False
+            createCross = False
+            createPolygon = False
+            createStar = False
+        elif j == (numImgToMake) / 8:
+            createCircle = False
+            createRect = True
+            createTri = False
+            createSemiCircle = False
+            createQuarterCircle = False
+            createCross = False
+            createPolygon = False
+            createStar = False
+        elif j == 2*(numImgToMake) / 8:
+            createCircle = False
+            createRect = False
+            createTri = True
+            createSemiCircle = False
+            createQuarterCircle = False
+            createCross = False
+            createPolygon = False
+            createStar = False
+        elif j == 3*(numImgToMake) / 8:
+            createCircle = False
+            createRect = False
+            createTri = False
+            createSemiCircle = True
+            createQuarterCircle = False
+            createCross = False
+            createPolygon = False
+            createStar = False
+        elif j == 4*(numImgToMake) / 8:
+            createCircle = False
+            createRect = False
+            createTri = False
+            createSemiCircle = False
             createQuarterCircle = True
             createCross = False
             createPolygon = False
             createStar = False
-        elif j == 500:
+        elif j == 5*(numImgToMake) / 8:
+            createCircle = False
+            createRect = False
+            createTri = False
+            createSemiCircle = False
             createQuarterCircle = False
             createCross = True
             createPolygon = False
             createStar = False
-        elif j == 1000:
+        elif j == 6*(numImgToMake) / 8:
+            createCircle = False
+            createRect = False
+            createTri = False
+            createSemiCircle = False
             createQuarterCircle = False
             createCross = False
             createPolygon = True
             createStar = False
-        elif j == 1500:
+        elif j == 7*(numImgToMake) / 8:
+            createCircle = False
+            createRect = False
+            createTri = False
+            createSemiCircle = False
             createQuarterCircle = False
             createCross = False
-            createPolygon = False
-            createStar = True
+            createPolygon = True
+            createStar = False
     base_img = cv2.imread("test google earth.jpg")
     for i in range(numTargetsPerImg):
         fileInfo = []
@@ -396,7 +447,10 @@ for j in range(numImgToMake):
                 cv2.imwrite('Image Dataset/Close Ups/Polygon/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", cropped_img)
             elif createStar:
                 cv2.imwrite('Image Dataset/Close Ups/Star/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", cropped_img)
-        #cv2.imwrite('Image Dataset/Full Image/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", base_img)
+        
+        if saveFullImg:
+           cv2.imwrite('C:/Users/acrog/Documents/Purdue/IEEE/MyDataset/Full Images/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", base_img)
+           
     if j % 100 == 0:
         print(j)
     
