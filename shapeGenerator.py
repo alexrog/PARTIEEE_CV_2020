@@ -294,20 +294,21 @@ def addSimilarColors(target):
 
 
 createCircle = False
-createRect = False
+createRect = True
 createTri = False
 createSemiCircle = False
 createQuarterCircle = False
 createCross = False
 createPolygon = False
-createStar = True
+createStar = False
 
 # CHANGE THESE
 createAllTargets = True
 saveImg = False
 saveFullImg = True
 numTargetsPerImg = 1 # inner
-numImgToMake = 40 # outer
+numImgToMake = 1 # outer
+sizeOfTarget = 100 # number of pixels to make target
 
 for j in range(numImgToMake):
     if createAllTargets:
@@ -414,7 +415,12 @@ for j in range(numImgToMake):
             target_img = cv2.rotate(target_img, cv2.ROTATE_180)
         elif random_rot == 4:
             target_img = cv2.rotate(target_img, cv2.ROTATE_90_COUNTERCLOCKWISE)
-        shrink_size = random.randint(10,18)/100
+        
+        w_target = target_img.shape[0]
+        
+        shrink_size = sizeOfTarget / w_target
+        
+        #shrink_size = random.randint(10,18)/100
         target_img = cv2.resize(target_img, (0,0), fx=shrink_size, fy=shrink_size,interpolation = cv2.INTER_AREA) 
         target_img = addSimilarColors(target_img)
         #target_img = sp_noise(target_img, 1)
@@ -449,7 +455,7 @@ for j in range(numImgToMake):
                 cv2.imwrite('Image Dataset/Close Ups/Star/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", cropped_img)
         
         if saveFullImg:
-           cv2.imwrite('C:/Users/acrog/Documents/Purdue/IEEE/MyDataset/Full Images/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".png", base_img)
+           cv2.imwrite('C:/Users/acrog/Documents/Purdue/IEEE/MyDataset/Full Images/'+fileInfo[0]+"_"+fileInfo[1]+"_"+fileInfo[2]+"_"+fileInfo[3]+".jpg", base_img)
            
     if j % 100 == 0:
         print(j)
