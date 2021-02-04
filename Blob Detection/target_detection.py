@@ -55,11 +55,37 @@ def findcontours(baseImg):
 
 
 def blobDect(baseImg):
-    detector = cv2.SimpleBlobDetector()
-    keypoints = detector.detect(baseImg)
-    blank = np.zeros((1, 1))
+    im_blur = cv2.medianBlur(baseImg, 5)
+    
+    inverted_img = cv2.bitwise_not(im_blur)
+    #thresh = cv2.adaptiveThreshold(im_blur,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,11,2)
+    # thresh = cv2.adaptiveThreshold(im_blur,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY,11,2)
+    ret, thresh = cv2.threshold(im_blur, 100, 255, cv2.THRESH_TOZERO)
+    #ret, thresh = cv2.threshold(thresh, 127, 255, 0)
+    #adaptive_thresh = cv2.adaptiveThreshold(inverted_img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,\
+            #cv2.THRESH_BINARY,11,2)
+    # get contours
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (3, 3))
+    
+    dialateValue = 1
 
-    blobs = cv2.drawKeypoints(baseImg, keypoints, blank, (0, 255, 255), cv2.DRAW_MATCHES_FLAGS_DEFAULT)
+    dilate = cv2.dilate(thresh, kernel, iterations=dialateValue)
+    
+    params = cv2.SimpleBlobDetector_Params()
+    params.filterByArea = True
+    params.filterByCircularity = False
+    params.filterByInertia = False
+    params.filterByConvexity = False
+    #params.filterByArea = True
+    params.maxArea = 100000
+    params.minArea = 1000
+
+    detector = cv2.SimpleBlobDetector_create(params)
+    keypoints = detector.detect(dilate)
+    #print("keypoints", keypoints, keypoints[0].pt[0], keypoints[0].pt[1], keypoints[0].size)
+
+    blobs = cv2.drawKeypoints(dilate, keypoints, np.array([]), (0, 0, 255),
+                                      cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
     return blobs
 
 
@@ -72,20 +98,19 @@ baseImg = cv2.imread(imagePath, cv2.IMREAD_GRAYSCALE)
 # crops out the google maps thing at the top
 baseImg = baseImg[0:baseImg.shape[1]][200:baseImg.shape[0]]
 
-print(baseImg)
 
 contourImg = findcontours(baseImg)
 
-# blobImg = blobDect(baseImg)
+blobImg = blobDect(baseImg)
 
 baseImg = resizeImg(baseImg)
 
 contourImg = resizeImg(contourImg)
 
-# blobImg = resizeImg(blobImg)
+blobImg = resizeImg(blobImg)
 
 cv2.imshow('contour image', contourImg)
 cv2.imshow('base image', baseImg)
-# cv2.imshow('blob image',blobImg)
+cv2.imshow('blob image',blobImg)
 cv2.waitKey(0)
 cv2.destroyAllWindows()

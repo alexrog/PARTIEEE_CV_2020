@@ -308,7 +308,7 @@ saveImg = False
 saveFullImg = True
 numTargetsPerImg = 1 # inner
 numImgToMake = 1 # outer
-sizeOfTarget = 100 # number of pixels to make target
+sizeOfTarget = 400 # number of pixels to make target
 
 for j in range(numImgToMake):
     if createAllTargets:
