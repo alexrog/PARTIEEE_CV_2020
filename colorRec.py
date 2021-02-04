@@ -4,6 +4,11 @@ import matplotlib.pyplot as plt
 from opencvHelperFunctions import showImage
 import os
 
+def showImage(im,title):
+    cv2.imshow(title,im)
+	cv2.waitKey(0)
+	cv2.destroyAllWindows()
+
 def bilFilter(image):
     filtered = cv2.bilateralFilter(image,10,10,30)
     for i in range(30):
