@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from opencvHelperFunctions import showImage
+import os
 
 def bilFilter(image):
     filtered = cv2.bilateralFilter(image,10,10,30)
@@ -26,27 +27,17 @@ def makeKMeans(filtered):
     showImage(reduced,'reduced')
     
     return reduced, label, center
-    
-if __name__ == '__main__':
-    img = cv2.imread("../Image Dataset/Close Ups/Circle/circle_#1abe2c_D_#f11752.png")
-    m,n,d = img.shape
-    
-    orig = img.copy()
-    filtered = bilFilter(img)
-    
-    reduced, label, center = makeKMeans(filtered)
-    
-    # swap BGR to RGB, add the hex value at i to an array.
-    hex_colors = []
+
+def BGRtoRGB(center):
     for i in range(3):
         tempB = center[i][0]
         center[i][0] = center[i][2]
         center[i][2] = tempB
-    
-    _, counts = np.unique(label, return_counts = True)
-    
+    return center
+
+def makeGraph(center):
     colors = []
-    
+        
     for i in range(3):
         print(f'Color {i + 1}: {center[i]} with frequency {counts[i]}')
         str1 = ''
@@ -66,3 +57,33 @@ if __name__ == '__main__':
     ax = fig.add_axes([0,0,1,1])
     ax.bar(colors, counts)
     plt.show()
+    return
+
+def compareHex(filename, colors):
+    #first hex is shape color, second hex is letter color
+    splitFile = filename.split("_")
+    splitFile[1] = splitFile[1].strip("#")
+    splitFile[3] = splitFile[3].strip("#")
+    
+    return
+    
+if __name__ == '__main__':
+    path = "Image Dataset/Close Ups/Circle/"
+    fileList = os.listdir(path)
+    for i in fileList:
+        img = cv2.imread("Image Dataset/Close Ups/Circle/circle_#6d0e59_d_#581e93.png")
+        m,n,d = img.shape
+        
+        orig = img.copy()
+        filtered = bilFilter(img)
+        
+        reduced, label, center = makeKMeans(filtered)
+        
+        # swap BGR to RGB, add the hex value at i to an array.
+        center = BGRtoRGB(center)
+        
+        _, counts = np.unique(label, return_counts = True)
+        
+        makeGraph(center)
+        
+        
