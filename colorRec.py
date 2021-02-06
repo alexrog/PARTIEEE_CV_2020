@@ -1,13 +1,13 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-from opencvHelperFunctions import showImage
 import os
+import webcolors as wc
 
 def showImage(im,title):
     cv2.imshow(title,im)
-	cv2.waitKey(0)
-	cv2.destroyAllWindows()
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
 def bilFilter(image):
     filtered = cv2.bilateralFilter(image,10,10,30)
@@ -40,7 +40,7 @@ def BGRtoRGB(center):
         center[i][2] = tempB
     return center
 
-def makeGraph(center):
+def makeGraph(center, counts, fileName):
     colors = []
         
     for i in range(3):
@@ -59,8 +59,11 @@ def makeGraph(center):
         colors.append(str1)
     
     fig = plt.figure()
-    ax = fig.add_axes([0,0,1,1])
-    ax.bar(colors, counts)
+    plt.bar(colors, counts, color=(center[0] / 256, center[1] / 256, center[2] / 256))
+    plt.title(fileName)
+    plt.xlabel('RGB Values')
+    plt.ylabel('Frequency')
+    #plt.xticks(counts, colors)
     plt.show()
     return
 
@@ -76,7 +79,7 @@ if __name__ == '__main__':
     path = "Image Dataset/Close Ups/Circle/"
     fileList = os.listdir(path)
     for i in fileList:
-        img = cv2.imread("Image Dataset/Close Ups/Circle/circle_#6d0e59_d_#581e93.png")
+        img = cv2.imread("Image Dataset/Close Ups/Circle/" + i)
         m,n,d = img.shape
         
         orig = img.copy()
@@ -89,6 +92,6 @@ if __name__ == '__main__':
         
         _, counts = np.unique(label, return_counts = True)
         
-        makeGraph(center)
+        makeGraph(center, counts, i)
         
         
